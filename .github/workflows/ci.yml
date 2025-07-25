@@ -8,20 +8,24 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  CARGO_BUILD_JOBS: 2
 
 jobs:
   test:
-    name: Test
+    name: Build & Test
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Set up Homebrew
+      uses: Homebrew/actions/setup-homebrew@main
       
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
       with:
-        targets: wasm32-unknown-unknown
+        targets: wasm32v1-none
         
     - name: Cache cargo registry
       uses: actions/cache@v4
@@ -30,11 +34,10 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        key: ${{ runner.os }}-cargo-stellar-${{ hashFiles('**/Cargo.lock') }}-v1
         
     - name: Install Stellar CLI
-      run: |
-        cargo install --locked stellar-cli --features opt
+      run: brew install stellar-cli
         
     - name: Run unit tests
       run: cargo test -p tic-tac-toe
@@ -43,9 +46,7 @@ jobs:
       run: cargo test -p tic-tac-toe-integration-tests
       
     - name: Build contract
-      run: |
-        cd contracts/tic-tac-toe
-        cargo build --target wasm32-unknown-unknown --release
+      run: stellar contract build
         
     - name: Check formatting
       run: cargo fmt --all -- --check
@@ -53,52 +54,9 @@ jobs:
     - name: Run clippy
       run: cargo clippy --all-targets --all-features -- -D warnings
 
-  build:
-    name: Build and Deploy Test
-    runs-on: ubuntu-latest
-    needs: test
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Install Rust
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        targets: wasm32-unknown-unknown
-        
-    - name: Cache cargo registry
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-        
-    - name: Install Stellar CLI
-      run: |
-        cargo install --locked stellar-cli --features opt
-        
-    - name: Build optimized contract
-      run: |
-        cd contracts/tic-tac-toe
-        cargo build --target wasm32-unknown-unknown --release
-        
     - name: Upload contract artifact
       uses: actions/upload-artifact@v4
       with:
         name: tic-tac-toe-contract
-        path: contracts/tic-tac-toe/target/wasm32-unknown-unknown/release/tic_tac_toe.wasm
+        path: target/wasm32v1-none/release/tic_tac_toe.wasm
         
-    - name: Test deployment script
-      run: |
-        # Set up test environment
-        stellar network add testnet \
-          --rpc-url https://soroban-testnet.stellar.org:443 \
-          --network-passphrase "Test SDF Network ; September 2015"
-          
-        # Generate test keypair (don't fund for CI)
-        stellar keys generate --global test-deployer --network testnet
-        
-        echo "✅ Deployment script validation passed"

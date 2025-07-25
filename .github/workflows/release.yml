@@ -7,6 +7,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  CARGO_BUILD_JOBS: 2
 
 jobs:
   release:
@@ -22,19 +23,40 @@ jobs:
       with:
         targets: wasm32-unknown-unknown
         
-    - name: Install Stellar CLI
+    - name: Verify Rust installation
       run: |
-        cargo install --locked stellar-cli --features opt
+        rustc --version
+        cargo --version
+        rustup show
+        
+    - name: Cache cargo registry and stellar CLI
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          ~/.cargo/bin/stellar
+          target
+        key: ${{ runner.os }}-cargo-stellar-${{ hashFiles('**/Cargo.lock') }}-v1
+        
+    - name: Install Stellar CLI
+      timeout-minutes: 20
+      run: |
+        if ! command -v stellar &> /dev/null; then
+          echo "Installing Stellar CLI..."
+          cargo install --locked stellar-cli
+        else
+          echo "Stellar CLI already installed"
+          stellar --version
+        fi
         
     - name: Build optimized contract
-      run: |
-        cd contracts/tic-tac-toe
-        cargo build --target wasm32-unknown-unknown --release
+      run: stellar contract build
         
     - name: Create release archive
       run: |
         mkdir -p release-assets
-        cp contracts/tic-tac-toe/target/wasm32-unknown-unknown/release/tic_tac_toe.wasm release-assets/
+        cp target/wasm32v1-none/release/tic_tac_toe.wasm release-assets/
         cp README.md release-assets/
         cp -r scripts release-assets/
         tar -czf tic-tac-toe-${{ github.ref_name }}.tar.gz -C release-assets .
@@ -44,7 +66,7 @@ jobs:
       with:
         files: |
           tic-tac-toe-${{ github.ref_name }}.tar.gz
-          contracts/tic-tac-toe/target/wasm32-unknown-unknown/release/tic_tac_toe.wasm
+          target/wasm32v1-none/release/tic_tac_toe.wasm
         body: |
           ## Tic-Tac-Toe Smart Contract Release ${{ github.ref_name }}
           
