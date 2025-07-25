@@ -412,7 +412,7 @@ make frontend-dev
 5. **Make Moves**: Click on board cells to make your moves
 6. **Win Detection**: Game automatically detects wins, draws, and turn management
 
-The frontend provides a much more user-friendly experience compared to CLI interaction.
+The frontend provides a much more user-friendly experience compared to CLI interaction and **directly calls the deployed smart contract** for all game operations - no game logic is duplicated in the frontend.
 
 ## 🚀 Using Released Contracts
 

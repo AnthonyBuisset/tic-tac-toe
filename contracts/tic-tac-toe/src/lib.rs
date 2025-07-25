@@ -34,12 +34,21 @@ pub struct Game {
     pub status: GameStatus,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+#[contracttype]
+pub struct GameInfo {
+    pub id: u32,
+    pub player_x: Symbol,
+    pub player_o: Symbol,
+    pub status: GameStatus,
+}
+
 #[contract]
 pub struct TicTacToeContract;
 
 #[contractimpl]
 impl TicTacToeContract {
-    pub fn create_game(env: Env, player_x: Symbol, player_o: Symbol) -> u32 {
+    pub fn create_game(env: Env, player_x: Symbol) -> u32 {
         let game_counter = env
             .storage()
             .persistent()
@@ -56,7 +65,7 @@ impl TicTacToeContract {
             board,
             current_player: Player::X,
             player_x,
-            player_o,
+            player_o: symbol_short!("waiting"),
             status: GameStatus::InProgress,
         };
 
@@ -68,6 +77,57 @@ impl TicTacToeContract {
             .set(&DataKey::GameCounter, &new_game_id);
 
         new_game_id
+    }
+
+    pub fn join_game(env: Env, game_id: u32, player_o: Symbol) -> Game {
+        let mut game: Game = env
+            .storage()
+            .persistent()
+            .get(&DataKey::Game(game_id))
+            .expect("Game not found");
+
+        if game.player_o != symbol_short!("waiting") {
+            panic!("Game already has two players");
+        }
+
+        if game.player_x == player_o {
+            panic!("Cannot join your own game");
+        }
+
+        game.player_o = player_o;
+
+        env.storage()
+            .persistent()
+            .set(&DataKey::Game(game_id), &game);
+        
+        game
+    }
+
+    pub fn list_games(env: Env) -> Vec<GameInfo> {
+        let game_counter = env
+            .storage()
+            .persistent()
+            .get(&DataKey::GameCounter)
+            .unwrap_or(0u32);
+
+        let mut games = Vec::new(&env);
+
+        for i in 1..=game_counter {
+            if let Some(game) = env
+                .storage()
+                .persistent()
+                .get::<DataKey, Game>(&DataKey::Game(i))
+            {
+                games.push_back(GameInfo {
+                    id: i,
+                    player_x: game.player_x,
+                    player_o: game.player_o,
+                    status: game.status,
+                });
+            }
+        }
+
+        games
     }
 
     pub fn make_move(env: Env, game_id: u32, player: Symbol, position: u32) -> Game {
@@ -83,6 +143,10 @@ impl TicTacToeContract {
 
         if game.status != GameStatus::InProgress {
             panic!("Game is already finished");
+        }
+
+        if game.player_o == symbol_short!("waiting") {
+            panic!("Game needs a second player");
         }
 
         let expected_player = match game.current_player {

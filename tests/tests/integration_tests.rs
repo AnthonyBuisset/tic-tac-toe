@@ -11,8 +11,11 @@ fn test_full_game_workflow() {
     let player_o = symbol_short!("bob");
 
     // Create a new game
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
     assert_eq!(game_id, 1);
+
+    // Join the game with second player
+    client.join_game(&game_id, &player_o);
 
     // Verify initial game state
     let game = client.get_game(&game_id);
@@ -70,13 +73,18 @@ fn test_multiple_concurrent_games() {
     let client = TicTacToeContractClient::new(&env, &contract_id);
 
     // Create multiple games
-    let game1_id = client.create_game(&symbol_short!("alice"), &symbol_short!("bob"));
-    let game2_id = client.create_game(&symbol_short!("charlie"), &symbol_short!("david"));
-    let game3_id = client.create_game(&symbol_short!("eve"), &symbol_short!("frank"));
+    let game1_id = client.create_game(&symbol_short!("alice"));
+    let game2_id = client.create_game(&symbol_short!("charlie"));
+    let game3_id = client.create_game(&symbol_short!("eve"));
 
     assert_eq!(game1_id, 1);
     assert_eq!(game2_id, 2);
     assert_eq!(game3_id, 3);
+
+    // Join the games with second players
+    client.join_game(&game1_id, &symbol_short!("bob"));
+    client.join_game(&game2_id, &symbol_short!("david"));
+    client.join_game(&game3_id, &symbol_short!("frank"));
 
     // Make moves in different games
     client.make_move(&game1_id, &symbol_short!("alice"), &0);
@@ -111,7 +119,8 @@ fn test_game_persistence() {
     let player_o = symbol_short!("bob");
 
     // Create and play several moves
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &1);
     client.make_move(&game_id, &player_x, &2);
@@ -145,7 +154,8 @@ fn test_winning_conditions_comprehensive() {
 
     // Row wins
     for row in 0..3 {
-        let game_id = client.create_game(&symbol_short!("alice"), &symbol_short!("bob"));
+        let game_id = client.create_game(&symbol_short!("alice"));
+        client.join_game(&game_id, &symbol_short!("bob"));
 
         // X wins the row, O plays other positions
         for col in 0..3 {
@@ -165,7 +175,8 @@ fn test_winning_conditions_comprehensive() {
 
     // Column wins
     for col in 0..3 {
-        let game_id = client.create_game(&symbol_short!("alice"), &symbol_short!("bob"));
+        let game_id = client.create_game(&symbol_short!("alice"));
+        client.join_game(&game_id, &symbol_short!("bob"));
 
         for row in 0..3 {
             let pos = row * 3 + col;
@@ -184,7 +195,8 @@ fn test_winning_conditions_comprehensive() {
 
     // Diagonal wins
     // Main diagonal (0, 4, 8)
-    let game_id = client.create_game(&symbol_short!("alice"), &symbol_short!("bob"));
+    let game_id = client.create_game(&symbol_short!("alice"));
+    client.join_game(&game_id, &symbol_short!("bob"));
     client.make_move(&game_id, &symbol_short!("alice"), &0);
     client.make_move(&game_id, &symbol_short!("bob"), &1);
     client.make_move(&game_id, &symbol_short!("alice"), &4);
@@ -195,7 +207,8 @@ fn test_winning_conditions_comprehensive() {
     assert_eq!(game.status, GameStatus::XWins);
 
     // Anti-diagonal (2, 4, 6)
-    let game_id = client.create_game(&symbol_short!("alice"), &symbol_short!("bob"));
+    let game_id = client.create_game(&symbol_short!("alice"));
+    client.join_game(&game_id, &symbol_short!("bob"));
     client.make_move(&game_id, &symbol_short!("alice"), &2);
     client.make_move(&game_id, &symbol_short!("bob"), &0);
     client.make_move(&game_id, &symbol_short!("alice"), &4);

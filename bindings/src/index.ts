@@ -31,12 +31,7 @@ if (typeof window !== 'undefined') {
 }
 
 
-export const networks = {
-  standalone: {
-    networkPassphrase: "Standalone Network ; February 2017",
-    contractId: "CAMFQABRMCWFSPMCYC2GVBUQ56SN46ILYQT7TX4SYQQIXBN4G4RJ5MNR",
-  }
-} as const
+
 
 export type DataKey = {tag: "Game", values: readonly [u32]} | {tag: "GameCounter", values: void};
 
@@ -53,11 +48,19 @@ export interface Game {
   status: GameStatus;
 }
 
+
+export interface GameInfo {
+  id: u32;
+  player_o: string;
+  player_x: string;
+  status: GameStatus;
+}
+
 export interface Client {
   /**
    * Construct and simulate a create_game transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  create_game: ({player_x, player_o}: {player_x: string, player_o: string}, options?: {
+  create_game: ({player_x}: {player_x: string}, options?: {
     /**
      * The fee to pay for the transaction. Default: BASE_FEE
      */
@@ -73,6 +76,46 @@ export interface Client {
      */
     simulate?: boolean;
   }) => Promise<AssembledTransaction<u32>>
+
+  /**
+   * Construct and simulate a join_game transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
+   */
+  join_game: ({game_id, player_o}: {game_id: u32, player_o: string}, options?: {
+    /**
+     * The fee to pay for the transaction. Default: BASE_FEE
+     */
+    fee?: number;
+
+    /**
+     * The maximum amount of time to wait for the transaction to complete. Default: DEFAULT_TIMEOUT
+     */
+    timeoutInSeconds?: number;
+
+    /**
+     * Whether to automatically simulate the transaction when constructing the AssembledTransaction. Default: true
+     */
+    simulate?: boolean;
+  }) => Promise<AssembledTransaction<Game>>
+
+  /**
+   * Construct and simulate a list_games transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
+   */
+  list_games: (options?: {
+    /**
+     * The fee to pay for the transaction. Default: BASE_FEE
+     */
+    fee?: number;
+
+    /**
+     * The maximum amount of time to wait for the transaction to complete. Default: DEFAULT_TIMEOUT
+     */
+    timeoutInSeconds?: number;
+
+    /**
+     * Whether to automatically simulate the transaction when constructing the AssembledTransaction. Default: true
+     */
+    simulate?: boolean;
+  }) => Promise<AssembledTransaction<Array<GameInfo>>>
 
   /**
    * Construct and simulate a make_move transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
@@ -156,7 +199,10 @@ export class Client extends ContractClient {
         "AAAAAgAAAAAAAAAAAAAABlBsYXllcgAAAAAAAgAAAAAAAAAAAAAAAVgAAAAAAAAAAAAAAAAAAAFPAAAA",
         "AAAAAgAAAAAAAAAAAAAACkdhbWVTdGF0dXMAAAAAAAQAAAAAAAAAAAAAAApJblByb2dyZXNzAAAAAAAAAAAAAAAAAAVYV2lucwAAAAAAAAAAAAAAAAAABU9XaW5zAAAAAAAAAAAAAAAAAAAERHJhdw==",
         "AAAAAQAAAAAAAAAAAAAABEdhbWUAAAAFAAAAAAAAAAVib2FyZAAAAAAAA+oAAAPoAAAH0AAAAAZQbGF5ZXIAAAAAAAAAAAAOY3VycmVudF9wbGF5ZXIAAAAAB9AAAAAGUGxheWVyAAAAAAAAAAAACHBsYXllcl9vAAAAEQAAAAAAAAAIcGxheWVyX3gAAAARAAAAAAAAAAZzdGF0dXMAAAAAB9AAAAAKR2FtZVN0YXR1cwAA",
-        "AAAAAAAAAAAAAAALY3JlYXRlX2dhbWUAAAAAAgAAAAAAAAAIcGxheWVyX3gAAAARAAAAAAAAAAhwbGF5ZXJfbwAAABEAAAABAAAABA==",
+        "AAAAAQAAAAAAAAAAAAAACEdhbWVJbmZvAAAABAAAAAAAAAACaWQAAAAAAAQAAAAAAAAACHBsYXllcl9vAAAAEQAAAAAAAAAIcGxheWVyX3gAAAARAAAAAAAAAAZzdGF0dXMAAAAAB9AAAAAKR2FtZVN0YXR1cwAA",
+        "AAAAAAAAAAAAAAALY3JlYXRlX2dhbWUAAAAAAQAAAAAAAAAIcGxheWVyX3gAAAARAAAAAQAAAAQ=",
+        "AAAAAAAAAAAAAAAJam9pbl9nYW1lAAAAAAAAAgAAAAAAAAAHZ2FtZV9pZAAAAAAEAAAAAAAAAAhwbGF5ZXJfbwAAABEAAAABAAAH0AAAAARHYW1l",
+        "AAAAAAAAAAAAAAAKbGlzdF9nYW1lcwAAAAAAAAAAAAEAAAPqAAAH0AAAAAhHYW1lSW5mbw==",
         "AAAAAAAAAAAAAAAJbWFrZV9tb3ZlAAAAAAAAAwAAAAAAAAAHZ2FtZV9pZAAAAAAEAAAAAAAAAAZwbGF5ZXIAAAAAABEAAAAAAAAACHBvc2l0aW9uAAAABAAAAAEAAAfQAAAABEdhbWU=",
         "AAAAAAAAAAAAAAAIZ2V0X2dhbWUAAAABAAAAAAAAAAdnYW1lX2lkAAAAAAQAAAABAAAH0AAAAARHYW1l",
         "AAAAAAAAAAAAAAAJZ2V0X2JvYXJkAAAAAAAAAQAAAAAAAAAHZ2FtZV9pZAAAAAAEAAAAAQAAA+oAAAPoAAAH0AAAAAZQbGF5ZXIAAA==" ]),
@@ -165,6 +211,8 @@ export class Client extends ContractClient {
   }
   public readonly fromJSON = {
     create_game: this.txFromJSON<u32>,
+        join_game: this.txFromJSON<Game>,
+        list_games: this.txFromJSON<Array<GameInfo>>,
         make_move: this.txFromJSON<Game>,
         get_game: this.txFromJSON<Game>,
         get_board: this.txFromJSON<Array<Option<Player>>>

@@ -10,10 +10,10 @@ fn test_create_game() {
     let player_x = symbol_short!("alice");
     let player_o = symbol_short!("bob");
 
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
     assert_eq!(game_id, 1);
 
-    let game = client.get_game(&game_id);
+    let game = client.join_game(&game_id, &player_o);
     assert_eq!(game.player_x, player_x);
     assert_eq!(game.player_o, player_o);
     assert_eq!(game.current_player, Player::X);
@@ -34,7 +34,8 @@ fn test_make_move() {
     let player_x = symbol_short!("alice");
     let player_o = symbol_short!("bob");
 
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
 
     let game = client.make_move(&game_id, &player_x, &0);
     assert_eq!(game.board.get(0).unwrap(), Some(Player::X));
@@ -57,7 +58,8 @@ fn test_wrong_player_move() {
     let player_x = symbol_short!("alice");
     let player_o = symbol_short!("bob");
 
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
 
     client.make_move(&game_id, &player_o, &0);
 }
@@ -72,7 +74,8 @@ fn test_position_already_taken() {
     let player_x = symbol_short!("alice");
     let player_o = symbol_short!("bob");
 
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
 
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &0);
@@ -88,7 +91,8 @@ fn test_invalid_position() {
     let player_x = symbol_short!("alice");
     let player_o = symbol_short!("bob");
 
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
 
     client.make_move(&game_id, &player_x, &9);
 }
@@ -102,7 +106,8 @@ fn test_winning_game_x() {
     let player_x = symbol_short!("alice");
     let player_o = symbol_short!("bob");
 
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
 
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &3);
@@ -122,7 +127,8 @@ fn test_winning_game_o() {
     let player_x = symbol_short!("alice");
     let player_o = symbol_short!("bob");
 
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
 
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &3);
@@ -143,7 +149,8 @@ fn test_draw_game() {
     let player_x = symbol_short!("alice");
     let player_o = symbol_short!("bob");
 
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
 
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &1);
@@ -168,7 +175,8 @@ fn test_move_after_game_finished() {
     let player_x = symbol_short!("alice");
     let player_o = symbol_short!("bob");
 
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
 
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &3);
@@ -190,11 +198,14 @@ fn test_multiple_games() {
     let player_x2 = symbol_short!("charlie");
     let player_o2 = symbol_short!("david");
 
-    let game_id1 = client.create_game(&player_x1, &player_o1);
-    let game_id2 = client.create_game(&player_x2, &player_o2);
+    let game_id1 = client.create_game(&player_x1);
+    let game_id2 = client.create_game(&player_x2);
 
     assert_eq!(game_id1, 1);
     assert_eq!(game_id2, 2);
+
+    client.join_game(&game_id1, &player_o1);
+    client.join_game(&game_id2, &player_o2);
 
     client.make_move(&game_id1, &player_x1, &0);
     client.make_move(&game_id2, &player_x2, &4);
@@ -217,7 +228,8 @@ fn test_get_board() {
     let player_x = symbol_short!("alice");
     let player_o = symbol_short!("bob");
 
-    let game_id = client.create_game(&player_x, &player_o);
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
 
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &4);
@@ -229,4 +241,76 @@ fn test_get_board() {
     for i in [1, 2, 3, 5, 6, 7, 8] {
         assert_eq!(board.get(i).unwrap(), None);
     }
+}
+
+#[test]
+#[should_panic(expected = "Game needs a second player")]
+fn test_move_without_second_player() {
+    let env = Env::default();
+    let contract_id = env.register(TicTacToeContract, ());
+    let client = TicTacToeContractClient::new(&env, &contract_id);
+
+    let player_x = symbol_short!("alice");
+
+    let game_id = client.create_game(&player_x);
+    client.make_move(&game_id, &player_x, &0);
+}
+
+#[test]
+#[should_panic(expected = "Game already has two players")]
+fn test_join_game_twice() {
+    let env = Env::default();
+    let contract_id = env.register(TicTacToeContract, ());
+    let client = TicTacToeContractClient::new(&env, &contract_id);
+
+    let player_x = symbol_short!("alice");
+    let player_o = symbol_short!("bob");
+    let player_o2 = symbol_short!("charlie");
+
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_o);
+    client.join_game(&game_id, &player_o2);
+}
+
+#[test]
+#[should_panic(expected = "Cannot join your own game")]
+fn test_join_own_game() {
+    let env = Env::default();
+    let contract_id = env.register(TicTacToeContract, ());
+    let client = TicTacToeContractClient::new(&env, &contract_id);
+
+    let player_x = symbol_short!("alice");
+
+    let game_id = client.create_game(&player_x);
+    client.join_game(&game_id, &player_x);
+}
+
+#[test]
+fn test_list_games() {
+    let env = Env::default();
+    let contract_id = env.register(TicTacToeContract, ());
+    let client = TicTacToeContractClient::new(&env, &contract_id);
+
+    let player_x1 = symbol_short!("alice");
+    let player_o1 = symbol_short!("bob");
+    let player_x2 = symbol_short!("charlie");
+
+    let game_id1 = client.create_game(&player_x1);
+    let _game_id2 = client.create_game(&player_x2);
+    client.join_game(&game_id1, &player_o1);
+
+    let games = client.list_games();
+    assert_eq!(games.len(), 2);
+
+    let game1_info = games.get(0).unwrap();
+    assert_eq!(game1_info.id, 1);
+    assert_eq!(game1_info.player_x, player_x1);
+    assert_eq!(game1_info.player_o, player_o1);
+    assert_eq!(game1_info.status, GameStatus::InProgress);
+
+    let game2_info = games.get(1).unwrap();
+    assert_eq!(game2_info.id, 2);
+    assert_eq!(game2_info.player_x, player_x2);
+    assert_eq!(game2_info.player_o, symbol_short!("waiting"));
+    assert_eq!(game2_info.status, GameStatus::InProgress);
 }
