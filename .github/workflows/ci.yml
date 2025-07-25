@@ -12,44 +12,32 @@ env:
 
 jobs:
   test:
-    name: Test
+    name: Build & Test
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Set up Homebrew
+      uses: Homebrew/actions/setup-homebrew@main
       
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
       with:
-        targets: wasm32-unknown-unknown
+        targets: wasm32v1-none
         
-    - name: Verify Rust installation
-      run: |
-        rustc --version
-        cargo --version
-        rustup show
-        
-    - name: Cache cargo registry and stellar CLI
+    - name: Cache cargo registry
       uses: actions/cache@v4
       with:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
-          ~/.cargo/bin/stellar
           target
         key: ${{ runner.os }}-cargo-stellar-${{ hashFiles('**/Cargo.lock') }}-v1
         
     - name: Install Stellar CLI
-      timeout-minutes: 20
-      run: |
-        if ! command -v stellar &> /dev/null; then
-          echo "Installing Stellar CLI..."
-          cargo install --locked stellar-cli
-        else
-          echo "Stellar CLI already installed"
-          stellar --version
-        fi
+      run: brew install stellar-cli
         
     - name: Run unit tests
       run: cargo test -p tic-tac-toe
@@ -66,64 +54,9 @@ jobs:
     - name: Run clippy
       run: cargo clippy --all-targets --all-features -- -D warnings
 
-  build:
-    name: Build and Deploy Test
-    runs-on: ubuntu-latest
-    needs: test
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Install Rust
-      uses: dtolnay/rust-toolchain@stable
-      with:
-        targets: wasm32-unknown-unknown
-        
-    - name: Verify Rust installation
-      run: |
-        rustc --version
-        cargo --version
-        rustup show
-        
-    - name: Cache cargo registry and stellar CLI
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cargo/registry
-          ~/.cargo/git
-          ~/.cargo/bin/stellar
-          target
-        key: ${{ runner.os }}-cargo-stellar-${{ hashFiles('**/Cargo.lock') }}-v1
-        
-    - name: Install Stellar CLI
-      timeout-minutes: 20
-      run: |
-        if ! command -v stellar &> /dev/null; then
-          echo "Installing Stellar CLI..."
-          cargo install --locked stellar-cli
-        else
-          echo "Stellar CLI already installed"
-          stellar --version
-        fi
-        
-    - name: Build optimized contract
-      run: stellar contract build
-        
     - name: Upload contract artifact
       uses: actions/upload-artifact@v4
       with:
         name: tic-tac-toe-contract
         path: target/wasm32v1-none/release/tic_tac_toe.wasm
         
-    - name: Test deployment script
-      run: |
-        # Set up test environment
-        stellar network add testnet \
-          --rpc-url https://soroban-testnet.stellar.org:443 \
-          --network-passphrase "Test SDF Network ; September 2015"
-          
-        # Generate test keypair (don't fund for CI)
-        stellar keys generate --global test-deployer --network testnet
-        
-        echo "✅ Deployment script validation passed"
