@@ -11,9 +11,10 @@ A fully-featured Tic-Tac-Toe game implemented as a Stellar smart contract using 
 - **Wallet Integration**: Connect with Freighter wallet or use test accounts for development
 - **Network Support**: Local, Testnet, and Mainnet compatibility
 - **Comprehensive Testing**: 100% test coverage with unit and integration tests
-- **Easy Deployment**: Automated deployment scripts for localnet
+- **Easy Deployment**: Automated deployment scripts for localnet and testnet
 - **Interactive Scripts**: Command-line tools for game interaction
-- **CI/CD Pipeline**: Automated testing and release workflows
+- **CI/CD Pipeline**: Automated testing and testnet deployment on releases
+- **Live Testnet Contract**: Automatic deployment to Stellar Testnet with each release
 
 ## 🏗️ Project Structure
 
@@ -46,6 +47,8 @@ A fully-featured Tic-Tac-Toe game implemented as a Stellar smart contract using 
 │   ├── package.json            # Frontend dependencies
 │   └── README.md               # Frontend documentation
 ├── bindings/                   # Generated TypeScript bindings
+├── docs/                       # Documentation
+│   └── github-deployment.md   # GitHub Actions setup guide
 ├── Makefile                    # Build and deployment commands
 ├── Cargo.toml                  # Workspace configuration
 └── README.md
@@ -349,8 +352,9 @@ The project includes automated workflows:
 ### Release Pipeline (`.github/workflows/release.yml`)
 - Triggers on version tags (`v*`)
 - Creates optimized build
-- Generates release artifacts
-- Publishes GitHub release with binaries
+- **Deploys contract to Stellar Testnet**
+- Generates release artifacts with contract ID
+- Publishes GitHub release with live contract information
 
 ## 🔐 Security Considerations
 
@@ -409,6 +413,37 @@ make frontend-dev
 6. **Win Detection**: Game automatically detects wins, draws, and turn management
 
 The frontend provides a much more user-friendly experience compared to CLI interaction.
+
+## 🚀 Using Released Contracts
+
+Each GitHub release automatically deploys the contract to Stellar Testnet:
+
+### 🎯 Quick Start with Released Contract
+1. **Check the latest release** on GitHub for the testnet contract ID
+2. **Use immediately** without local deployment:
+   ```bash
+   # No local setup needed - use the deployed contract directly!
+   stellar contract invoke \
+     --id <CONTRACT_ID_FROM_RELEASE> \
+     --source <your-account> \
+     --network testnet \
+     -- create_game --player_x alice --player_o bob
+   ```
+
+### 🌐 Frontend with Released Contract
+1. **Download the release** or clone the repository
+2. **Start the frontend**: `make frontend-dev`
+3. **Select "Testnet"** in the network dropdown
+4. **Connect Freighter wallet** for testnet
+5. **Play immediately** using the live deployed contract
+
+### 📋 Release Information
+- **Contract ID**: Available in release notes and `.contract-id-testnet` file
+- **Network**: Stellar Testnet (ready for production testing)
+- **Status**: Deployed and verified with comprehensive test suite
+- **Frontend**: Included in release package for immediate use
+
+See `docs/github-deployment.md` for setup instructions for automatic deployment.
 
 ## 🙋‍♂️ Built With
 

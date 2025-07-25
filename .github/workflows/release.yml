@@ -17,41 +17,35 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Set up Homebrew
+      uses: Homebrew/actions/setup-homebrew@main
       
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
       with:
-        targets: wasm32-unknown-unknown
-        
-    - name: Verify Rust installation
-      run: |
-        rustc --version
-        cargo --version
-        rustup show
-        
-    - name: Cache cargo registry and stellar CLI
+        targets: wasm32v1-none
+
+    - name: Cache cargo registry
       uses: actions/cache@v4
       with:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
-          ~/.cargo/bin/stellar
           target
         key: ${{ runner.os }}-cargo-stellar-${{ hashFiles('**/Cargo.lock') }}-v1
         
     - name: Install Stellar CLI
-      timeout-minutes: 20
-      run: |
-        if ! command -v stellar &> /dev/null; then
-          echo "Installing Stellar CLI..."
-          cargo install --locked stellar-cli
-        else
-          echo "Stellar CLI already installed"
-          stellar --version
-        fi
+      run: brew install stellar-cli
         
     - name: Build optimized contract
       run: stellar contract build
+
+    - name: Deploy to Testnet
+      id: deploy-testnet
+      run: ./scripts/deploy-testnet.sh
+      env:
+        STELLAR_PRIVATE_KEY: ${{ secrets.STELLAR_TESTNET_PRIVATE_KEY }}
         
     - name: Create release archive
       run: |
@@ -59,6 +53,8 @@ jobs:
         cp target/wasm32v1-none/release/tic_tac_toe.wasm release-assets/
         cp README.md release-assets/
         cp -r scripts release-assets/
+        cp -r frontend release-assets/
+        cp .contract-id-testnet release-assets/contract-id-testnet.txt
         tar -czf tic-tac-toe-${{ github.ref_name }}.tar.gz -C release-assets .
         
     - name: Create Release
@@ -67,24 +63,50 @@ jobs:
         files: |
           tic-tac-toe-${{ github.ref_name }}.tar.gz
           target/wasm32v1-none/release/tic_tac_toe.wasm
+          .contract-id-testnet
         body: |
           ## Tic-Tac-Toe Smart Contract Release ${{ github.ref_name }}
+          
+          ### 🌐 Live Contract on Testnet
+          **Contract ID**: `${{ steps.deploy-testnet.outputs.testnet_contract_id }}`  
+          **Network**: Stellar Testnet  
+          **Status**: ✅ Deployed and ready to use  
+          
+          You can interact with this contract immediately on testnet using:
+          ```bash
+          stellar contract invoke \
+            --id ${{ steps.deploy-testnet.outputs.testnet_contract_id }} \
+            --source <your-account> \
+            --network testnet \
+            -- create_game \
+            --player_x <player1> \
+            --player_o <player2>
+          ```
           
           ### Features
           - ✅ Complete Tic-Tac-Toe game logic
           - ✅ Multiple concurrent games support
           - ✅ Comprehensive test coverage
-          - ✅ Deployment scripts for localnet
+          - ✅ Live deployment on Stellar Testnet
+          - ✅ React frontend with wallet integration
           
           ### Files
           - `tic_tac_toe.wasm` - Compiled smart contract
-          - `tic-tac-toe-${{ github.ref_name }}.tar.gz` - Complete release package
+          - `tic-tac-toe-${{ github.ref_name }}.tar.gz` - Complete release package with frontend
+          - `.contract-id-testnet` - Testnet contract ID for easy reference
           
-          ### Deployment
+          ### Local Development
           1. Extract the release package
           2. Run `./scripts/setup-localnet.sh` to set up localnet
-          3. Run `./scripts/deploy.sh` to deploy the contract
-          4. Use `./scripts/interact.sh` to play games
+          3. Run `./scripts/deploy.sh` to deploy the contract locally
+          4. Use `make frontend-dev` to start the web interface
+          
+          ### Frontend Usage
+          The contract is ready to use with the included React frontend:
+          1. Start frontend: `make frontend-dev`
+          2. Select "Testnet" network
+          3. Connect your Freighter wallet
+          4. Create or join games using the testnet contract
           
           See README.md for detailed instructions.
         draft: false
