@@ -1,0 +1,9 @@
+[package]
+name = "tic-tac-toe-integration-tests"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+tic-tac-toe = { path = "../contracts/tic-tac-toe" }

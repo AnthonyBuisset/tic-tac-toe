@@ -1,0 +1,20 @@
+# Build artifacts
+target/
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Contract deployment artifacts
+.contract-id
+.game-id
+
+# Stellar keys (local development only)
+# Note: Never commit real keys to version control

@@ -1,0 +1,69 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: wasm32-unknown-unknown
+        
+    - name: Install Stellar CLI
+      run: |
+        cargo install --locked stellar-cli --features opt
+        
+    - name: Build optimized contract
+      run: |
+        cd contracts/tic-tac-toe
+        cargo build --target wasm32-unknown-unknown --release
+        
+    - name: Create release archive
+      run: |
+        mkdir -p release-assets
+        cp contracts/tic-tac-toe/target/wasm32-unknown-unknown/release/tic_tac_toe.wasm release-assets/
+        cp README.md release-assets/
+        cp -r scripts release-assets/
+        tar -czf tic-tac-toe-${{ github.ref_name }}.tar.gz -C release-assets .
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          tic-tac-toe-${{ github.ref_name }}.tar.gz
+          contracts/tic-tac-toe/target/wasm32-unknown-unknown/release/tic_tac_toe.wasm
+        body: |
+          ## Tic-Tac-Toe Smart Contract Release ${{ github.ref_name }}
+          
+          ### Features
+          - ✅ Complete Tic-Tac-Toe game logic
+          - ✅ Multiple concurrent games support
+          - ✅ Comprehensive test coverage
+          - ✅ Deployment scripts for localnet
+          
+          ### Files
+          - `tic_tac_toe.wasm` - Compiled smart contract
+          - `tic-tac-toe-${{ github.ref_name }}.tar.gz` - Complete release package
+          
+          ### Deployment
+          1. Extract the release package
+          2. Run `./scripts/setup-localnet.sh` to set up localnet
+          3. Run `./scripts/deploy.sh` to deploy the contract
+          4. Use `./scripts/interact.sh` to play games
+          
+          See README.md for detailed instructions.
+        draft: false
+        prerelease: false
