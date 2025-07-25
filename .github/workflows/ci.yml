@@ -8,6 +8,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  CARGO_BUILD_JOBS: 2
 
 jobs:
   test:
@@ -23,18 +24,32 @@ jobs:
       with:
         targets: wasm32-unknown-unknown
         
-    - name: Cache cargo registry
+    - name: Verify Rust installation
+      run: |
+        rustc --version
+        cargo --version
+        rustup show
+        
+    - name: Cache cargo registry and stellar CLI
       uses: actions/cache@v4
       with:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
+          ~/.cargo/bin/stellar
           target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        key: ${{ runner.os }}-cargo-stellar-${{ hashFiles('**/Cargo.lock') }}-v1
         
     - name: Install Stellar CLI
+      timeout-minutes: 20
       run: |
-        cargo install --locked stellar-cli
+        if ! command -v stellar &> /dev/null; then
+          echo "Installing Stellar CLI..."
+          cargo install --locked stellar-cli
+        else
+          echo "Stellar CLI already installed"
+          stellar --version
+        fi
         
     - name: Run unit tests
       run: cargo test -p tic-tac-toe
@@ -65,18 +80,32 @@ jobs:
       with:
         targets: wasm32-unknown-unknown
         
-    - name: Cache cargo registry
+    - name: Verify Rust installation
+      run: |
+        rustc --version
+        cargo --version
+        rustup show
+        
+    - name: Cache cargo registry and stellar CLI
       uses: actions/cache@v4
       with:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
+          ~/.cargo/bin/stellar
           target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        key: ${{ runner.os }}-cargo-stellar-${{ hashFiles('**/Cargo.lock') }}-v1
         
     - name: Install Stellar CLI
+      timeout-minutes: 20
       run: |
-        cargo install --locked stellar-cli
+        if ! command -v stellar &> /dev/null; then
+          echo "Installing Stellar CLI..."
+          cargo install --locked stellar-cli
+        else
+          echo "Stellar CLI already installed"
+          stellar --version
+        fi
         
     - name: Build optimized contract
       run: stellar contract build
