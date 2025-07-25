@@ -1,5 +1,5 @@
 use soroban_sdk::{symbol_short, Env};
-use tic_tac_toe::{TicTacToeContract, TicTacToeContractClient, Player, GameStatus};
+use tic_tac_toe::{GameStatus, Player, TicTacToeContract, TicTacToeContractClient};
 
 #[test]
 fn test_full_game_workflow() {
@@ -23,33 +23,33 @@ fn test_full_game_workflow() {
 
     // Play a complete game where X wins diagonally
     // X | O | X
-    // O | X | O  
+    // O | X | O
     // ? | ? | X
-    
+
     // X plays position 0 (top-left)
     let game = client.make_move(&game_id, &player_x, &0);
     assert_eq!(game.current_player, Player::O);
     assert_eq!(game.status, GameStatus::InProgress);
-    
+
     // O plays position 1 (top-center)
     let game = client.make_move(&game_id, &player_o, &1);
     assert_eq!(game.current_player, Player::X);
     assert_eq!(game.status, GameStatus::InProgress);
-    
+
     // X plays position 4 (center)
     let game = client.make_move(&game_id, &player_x, &4);
     assert_eq!(game.current_player, Player::O);
     assert_eq!(game.status, GameStatus::InProgress);
-    
+
     // O plays position 3 (middle-left)
     let game = client.make_move(&game_id, &player_o, &3);
     assert_eq!(game.current_player, Player::X);
     assert_eq!(game.status, GameStatus::InProgress);
-    
+
     // X plays position 8 (bottom-right) - winning move
     let game = client.make_move(&game_id, &player_x, &8);
     assert_eq!(game.status, GameStatus::XWins);
-    
+
     // Verify final board state
     let board = client.get_board(&game_id);
     assert_eq!(board.get(0).unwrap(), Some(Player::X));
@@ -127,7 +127,7 @@ fn test_game_persistence() {
     assert_eq!(game1.current_player, game2.current_player);
     assert_eq!(game1.status, game2.status);
     assert_eq!(board1, board2);
-    
+
     // Verify specific game state
     assert_eq!(game1.current_player, Player::O);
     assert_eq!(board1.get(0).unwrap(), Some(Player::X));
@@ -142,44 +142,46 @@ fn test_winning_conditions_comprehensive() {
     let client = TicTacToeContractClient::new(&env, &contract_id);
 
     // Test all possible winning conditions for X
-    
+
     // Row wins
     for row in 0..3 {
         let game_id = client.create_game(&symbol_short!("alice"), &symbol_short!("bob"));
-        
+
         // X wins the row, O plays other positions
         for col in 0..3 {
             let pos = row * 3 + col;
             client.make_move(&game_id, &symbol_short!("alice"), &pos);
-            
-            if col < 2 {  // Don't make O move after winning move
+
+            if col < 2 {
+                // Don't make O move after winning move
                 let o_pos = ((row + 1) % 3) * 3 + col;
                 client.make_move(&game_id, &symbol_short!("bob"), &o_pos);
             }
         }
-        
+
         let game = client.get_game(&game_id);
         assert_eq!(game.status, GameStatus::XWins);
     }
-    
+
     // Column wins
     for col in 0..3 {
         let game_id = client.create_game(&symbol_short!("alice"), &symbol_short!("bob"));
-        
+
         for row in 0..3 {
             let pos = row * 3 + col;
             client.make_move(&game_id, &symbol_short!("alice"), &pos);
-            
-            if row < 2 {  // Don't make O move after winning move
+
+            if row < 2 {
+                // Don't make O move after winning move
                 let o_pos = row * 3 + ((col + 1) % 3);
                 client.make_move(&game_id, &symbol_short!("bob"), &o_pos);
             }
         }
-        
+
         let game = client.get_game(&game_id);
         assert_eq!(game.status, GameStatus::XWins);
     }
-    
+
     // Diagonal wins
     // Main diagonal (0, 4, 8)
     let game_id = client.create_game(&symbol_short!("alice"), &symbol_short!("bob"));
@@ -188,10 +190,10 @@ fn test_winning_conditions_comprehensive() {
     client.make_move(&game_id, &symbol_short!("alice"), &4);
     client.make_move(&game_id, &symbol_short!("bob"), &2);
     client.make_move(&game_id, &symbol_short!("alice"), &8);
-    
+
     let game = client.get_game(&game_id);
     assert_eq!(game.status, GameStatus::XWins);
-    
+
     // Anti-diagonal (2, 4, 6)
     let game_id = client.create_game(&symbol_short!("alice"), &symbol_short!("bob"));
     client.make_move(&game_id, &symbol_short!("alice"), &2);
@@ -199,7 +201,7 @@ fn test_winning_conditions_comprehensive() {
     client.make_move(&game_id, &symbol_short!("alice"), &4);
     client.make_move(&game_id, &symbol_short!("bob"), &1);
     client.make_move(&game_id, &symbol_short!("alice"), &6);
-    
+
     let game = client.get_game(&game_id);
     assert_eq!(game.status, GameStatus::XWins);
 }

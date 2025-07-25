@@ -24,17 +24,15 @@ jobs:
         
     - name: Install Stellar CLI
       run: |
-        cargo install --locked stellar-cli --features opt
+        cargo install --locked stellar-cli
         
     - name: Build optimized contract
-      run: |
-        cd contracts/tic-tac-toe
-        cargo build --target wasm32-unknown-unknown --release
+      run: stellar contract build
         
     - name: Create release archive
       run: |
         mkdir -p release-assets
-        cp contracts/tic-tac-toe/target/wasm32-unknown-unknown/release/tic_tac_toe.wasm release-assets/
+        cp target/wasm32v1-none/release/tic_tac_toe.wasm release-assets/
         cp README.md release-assets/
         cp -r scripts release-assets/
         tar -czf tic-tac-toe-${{ github.ref_name }}.tar.gz -C release-assets .
@@ -44,7 +42,7 @@ jobs:
       with:
         files: |
           tic-tac-toe-${{ github.ref_name }}.tar.gz
-          contracts/tic-tac-toe/target/wasm32-unknown-unknown/release/tic_tac_toe.wasm
+          target/wasm32v1-none/release/tic_tac_toe.wasm
         body: |
           ## Tic-Tac-Toe Smart Contract Release ${{ github.ref_name }}
           

@@ -34,7 +34,7 @@ jobs:
         
     - name: Install Stellar CLI
       run: |
-        cargo install --locked stellar-cli --features opt
+        cargo install --locked stellar-cli
         
     - name: Run unit tests
       run: cargo test -p tic-tac-toe
@@ -43,9 +43,7 @@ jobs:
       run: cargo test -p tic-tac-toe-integration-tests
       
     - name: Build contract
-      run: |
-        cd contracts/tic-tac-toe
-        cargo build --target wasm32-unknown-unknown --release
+      run: stellar contract build
         
     - name: Check formatting
       run: cargo fmt --all -- --check
@@ -78,18 +76,16 @@ jobs:
         
     - name: Install Stellar CLI
       run: |
-        cargo install --locked stellar-cli --features opt
+        cargo install --locked stellar-cli
         
     - name: Build optimized contract
-      run: |
-        cd contracts/tic-tac-toe
-        cargo build --target wasm32-unknown-unknown --release
+      run: stellar contract build
         
     - name: Upload contract artifact
       uses: actions/upload-artifact@v4
       with:
         name: tic-tac-toe-contract
-        path: contracts/tic-tac-toe/target/wasm32-unknown-unknown/release/tic_tac_toe.wasm
+        path: target/wasm32v1-none/release/tic_tac_toe.wasm
         
     - name: Test deployment script
       run: |

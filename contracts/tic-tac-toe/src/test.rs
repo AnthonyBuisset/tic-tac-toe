@@ -1,5 +1,3 @@
-#![cfg(test)]
-
 use super::*;
 use soroban_sdk::{symbol_short, Env};
 
@@ -21,7 +19,7 @@ fn test_create_game() {
     assert_eq!(game.current_player, Player::X);
     assert_eq!(game.status, GameStatus::InProgress);
     assert_eq!(game.board.len(), 9);
-    
+
     for i in 0..9 {
         assert_eq!(game.board.get(i).unwrap(), None);
     }
@@ -37,12 +35,12 @@ fn test_make_move() {
     let player_o = symbol_short!("bob");
 
     let game_id = client.create_game(&player_x, &player_o);
-    
+
     let game = client.make_move(&game_id, &player_x, &0);
     assert_eq!(game.board.get(0).unwrap(), Some(Player::X));
     assert_eq!(game.current_player, Player::O);
     assert_eq!(game.status, GameStatus::InProgress);
-    
+
     let game = client.make_move(&game_id, &player_o, &4);
     assert_eq!(game.board.get(4).unwrap(), Some(Player::O));
     assert_eq!(game.current_player, Player::X);
@@ -60,7 +58,7 @@ fn test_wrong_player_move() {
     let player_o = symbol_short!("bob");
 
     let game_id = client.create_game(&player_x, &player_o);
-    
+
     client.make_move(&game_id, &player_o, &0);
 }
 
@@ -75,7 +73,7 @@ fn test_position_already_taken() {
     let player_o = symbol_short!("bob");
 
     let game_id = client.create_game(&player_x, &player_o);
-    
+
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &0);
 }
@@ -91,7 +89,7 @@ fn test_invalid_position() {
     let player_o = symbol_short!("bob");
 
     let game_id = client.create_game(&player_x, &player_o);
-    
+
     client.make_move(&game_id, &player_x, &9);
 }
 
@@ -105,13 +103,13 @@ fn test_winning_game_x() {
     let player_o = symbol_short!("bob");
 
     let game_id = client.create_game(&player_x, &player_o);
-    
+
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &3);
     client.make_move(&game_id, &player_x, &1);
     client.make_move(&game_id, &player_o, &4);
     let game = client.make_move(&game_id, &player_x, &2);
-    
+
     assert_eq!(game.status, GameStatus::XWins);
 }
 
@@ -125,14 +123,14 @@ fn test_winning_game_o() {
     let player_o = symbol_short!("bob");
 
     let game_id = client.create_game(&player_x, &player_o);
-    
+
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &3);
     client.make_move(&game_id, &player_x, &1);
     client.make_move(&game_id, &player_o, &4);
     client.make_move(&game_id, &player_x, &6);
     let game = client.make_move(&game_id, &player_o, &5);
-    
+
     assert_eq!(game.status, GameStatus::OWins);
 }
 
@@ -146,7 +144,7 @@ fn test_draw_game() {
     let player_o = symbol_short!("bob");
 
     let game_id = client.create_game(&player_x, &player_o);
-    
+
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &1);
     client.make_move(&game_id, &player_x, &2);
@@ -156,7 +154,7 @@ fn test_draw_game() {
     client.make_move(&game_id, &player_x, &7);
     client.make_move(&game_id, &player_o, &6);
     let game = client.make_move(&game_id, &player_x, &8);
-    
+
     assert_eq!(game.status, GameStatus::Draw);
 }
 
@@ -171,13 +169,13 @@ fn test_move_after_game_finished() {
     let player_o = symbol_short!("bob");
 
     let game_id = client.create_game(&player_x, &player_o);
-    
+
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &3);
     client.make_move(&game_id, &player_x, &1);
     client.make_move(&game_id, &player_o, &4);
     client.make_move(&game_id, &player_x, &2);
-    
+
     client.make_move(&game_id, &player_o, &5);
 }
 
@@ -194,16 +192,16 @@ fn test_multiple_games() {
 
     let game_id1 = client.create_game(&player_x1, &player_o1);
     let game_id2 = client.create_game(&player_x2, &player_o2);
-    
+
     assert_eq!(game_id1, 1);
     assert_eq!(game_id2, 2);
-    
+
     client.make_move(&game_id1, &player_x1, &0);
     client.make_move(&game_id2, &player_x2, &4);
-    
+
     let game1 = client.get_game(&game_id1);
     let game2 = client.get_game(&game_id2);
-    
+
     assert_eq!(game1.board.get(0).unwrap(), Some(Player::X));
     assert_eq!(game1.board.get(4).unwrap(), None);
     assert_eq!(game2.board.get(0).unwrap(), None);
@@ -220,14 +218,14 @@ fn test_get_board() {
     let player_o = symbol_short!("bob");
 
     let game_id = client.create_game(&player_x, &player_o);
-    
+
     client.make_move(&game_id, &player_x, &0);
     client.make_move(&game_id, &player_o, &4);
-    
+
     let board = client.get_board(&game_id);
     assert_eq!(board.get(0).unwrap(), Some(Player::X));
     assert_eq!(board.get(4).unwrap(), Some(Player::O));
-    
+
     for i in [1, 2, 3, 5, 6, 7, 8] {
         assert_eq!(board.get(i).unwrap(), None);
     }
