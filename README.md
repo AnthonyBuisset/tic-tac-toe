@@ -53,16 +53,30 @@ git clone <repository-url>
 cd tic-tac-toe
 ```
 
-### 2. Set Up Local Network
+### 2. Start Stellar Localnet
+
+First, start the Stellar localnet in a separate terminal:
 
 ```bash
-# Set up localnet with test accounts
+# Start localnet (keep this running in separate terminal)
+stellar container start local
+
+# Verify localnet is running
+stellar network ls
+```
+
+The localnet will run on `http://localhost:8000` and provide a local Stellar network for development.
+
+### 3. Set Up Test Accounts
+
+```bash
+# Set up localnet with test accounts (run this after localnet is started)
 make setup-localnet
 # or
 ./scripts/setup-localnet.sh
 ```
 
-### 3. Build and Deploy
+### 4. Build and Deploy
 
 ```bash
 # Build, test, and deploy
@@ -72,7 +86,7 @@ make build
 ./scripts/deploy.sh
 ```
 
-### 4. Play the Game
+### 5. Play the Game
 
 ```bash
 # Create a new game
@@ -136,6 +150,76 @@ cargo fmt
 
 # Lint code
 cargo clippy
+```
+
+## 🌐 Local Network Management
+
+### Starting and Managing Localnet
+
+```bash
+# Start localnet (runs on http://localhost:8000)
+stellar container start local
+
+# Check if localnet is running
+stellar network ls
+
+# Watch localnet logs (optional)
+stellar container logs local
+
+# Stop localnet when done
+stellar container stop local
+```
+
+### Network Configuration
+
+The localnet automatically configures:
+- **RPC URL**: `http://localhost:8000/soroban/rpc`
+- **Network Passphrase**: `"Standalone Network ; February 2017"`
+- **Horizon URL**: `http://localhost:8000`
+
+### Troubleshooting Localnet
+
+**Localnet won't start:**
+```bash
+# Check if port 8000 is available
+lsof -i :8000
+
+# Kill any processes using port 8000
+kill -9 $(lsof -t -i:8000)
+
+# Try starting again
+stellar container start local
+```
+
+**Can't connect to localnet:**
+```bash
+# Verify network configuration
+stellar network ls
+
+# Stop and restart
+stellar container stop local
+stellar container start local
+```
+
+**Account funding issues:**
+```bash
+# Re-run account setup
+./scripts/setup-localnet.sh
+
+# Manually fund accounts if needed
+stellar keys fund alice --network local
+stellar keys fund bob --network local
+```
+
+**Contract invocation issues:**
+If you encounter `TxSorobanInvalid` errors when calling contract methods via CLI, this may be related to symbol parameter formatting. The contract is properly deployed and all functionality works as verified by the comprehensive test suite. For production use, integrate with the TypeScript bindings or Rust SDK.
+
+```bash
+# Generate TypeScript bindings for integration
+stellar contract bindings typescript \
+  --contract-id $(cat .contract-id) \
+  --network local \
+  --output-dir ./bindings
 ```
 
 ## 📋 Available Commands

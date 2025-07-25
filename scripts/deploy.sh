@@ -4,18 +4,37 @@ set -e
 
 echo "🚀 Deploying Tic-Tac-Toe Smart Contract to Localnet"
 
+# Check if localnet is running
+echo "🌐 Checking localnet status..."
+if ! curl -s http://localhost:8000/soroban/rpc > /dev/null 2>&1; then
+    echo "❌ Localnet is not running!"
+    echo "💡 Please start localnet first:"
+    echo "   stellar network start local"
+    echo ""
+    echo "   Then run this script again."
+    exit 1
+fi
+
+echo "✅ Localnet is running"
+
 # Build the contract
 echo "📦 Building contract..."
-cd contracts/tic-tac-toe
-cargo build --target wasm32-unknown-unknown --release
-cd ../..
+stellar contract build
 
-# Deploy to localnet
-echo "🌐 Deploying to localnet..."
-CONTRACT_ID=$(stellar contract deploy \
-    --wasm contracts/tic-tac-toe/target/wasm32-unknown-unknown/release/tic_tac_toe.wasm \
+# Upload and deploy to localnet
+echo "🌐 Uploading WASM to localnet..."
+WASM_HASH=$(stellar contract upload \
+    --wasm target/wasm32v1-none/release/tic_tac_toe.wasm \
     --source alice \
-    --network localnet)
+    --network local)
+
+echo "📝 WASM Hash: $WASM_HASH"
+
+echo "🚀 Deploying contract instance..."
+CONTRACT_ID=$(stellar contract deploy \
+    --wasm-hash $WASM_HASH \
+    --source alice \
+    --network local)
 
 echo "✅ Contract deployed successfully!"
 echo "📝 Contract ID: $CONTRACT_ID"

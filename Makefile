@@ -26,7 +26,7 @@ help:
 # Build the contract
 build:
 	@echo "📦 Building Tic-Tac-Toe contract..."
-	@cd contracts/tic-tac-toe && cargo build --target wasm32-unknown-unknown --release
+	@stellar contract build
 
 # Run unit tests
 test:

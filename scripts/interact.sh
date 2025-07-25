@@ -17,7 +17,7 @@ case "${1:-help}" in
         GAME_ID=$(stellar contract invoke \
             --id $CONTRACT_ID \
             --source alice \
-            --network localnet \
+            --network local \
             -- \
             create_game \
             --player_x alice \
@@ -40,7 +40,7 @@ case "${1:-help}" in
         stellar contract invoke \
             --id $CONTRACT_ID \
             --source $PLAYER \
-            --network localnet \
+            --network local \
             -- \
             make_move \
             --game_id $GAME_ID \
@@ -59,7 +59,7 @@ case "${1:-help}" in
         stellar contract invoke \
             --id $CONTRACT_ID \
             --source alice \
-            --network localnet \
+            --network local \
             -- \
             get_game \
             --game_id $GAME_ID
@@ -76,7 +76,7 @@ case "${1:-help}" in
         stellar contract invoke \
             --id $CONTRACT_ID \
             --source alice \
-            --network localnet \
+            --network local \
             -- \
             get_board \
             --game_id $GAME_ID
