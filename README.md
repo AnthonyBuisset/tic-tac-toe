@@ -7,6 +7,9 @@ A fully-featured Tic-Tac-Toe game implemented as a Stellar smart contract using 
 - **Complete Game Logic**: Full Tic-Tac-Toe implementation with win detection, draw handling, and turn management
 - **Multiple Games**: Support for multiple concurrent games with unique game IDs
 - **Persistent Storage**: Game state persisted on the blockchain
+- **Web Frontend**: React-based UI with wallet integration and real-time gameplay
+- **Wallet Integration**: Connect with Freighter wallet or use test accounts for development
+- **Network Support**: Local, Testnet, and Mainnet compatibility
 - **Comprehensive Testing**: 100% test coverage with unit and integration tests
 - **Easy Deployment**: Automated deployment scripts for localnet
 - **Interactive Scripts**: Command-line tools for game interaction
@@ -34,6 +37,15 @@ A fully-featured Tic-Tac-Toe game implemented as a Stellar smart contract using 
 ├── .github/workflows/
 │   ├── ci.yml                  # CI pipeline
 │   └── release.yml             # Release pipeline
+├── frontend/                   # React frontend application
+│   ├── src/
+│   │   ├── App.tsx             # Main application component
+│   │   ├── simple-contracts.ts # Contract integration
+│   │   ├── wallet.ts           # Freighter wallet integration
+│   │   └── ...                 # Other frontend files
+│   ├── package.json            # Frontend dependencies
+│   └── README.md               # Frontend documentation
+├── bindings/                   # Generated TypeScript bindings
 ├── Makefile                    # Build and deployment commands
 ├── Cargo.toml                  # Workspace configuration
 └── README.md
@@ -88,6 +100,14 @@ make build
 
 ### 5. Play the Game
 
+#### Option A: Web Frontend (Recommended)
+```bash
+# Start the frontend development server
+make frontend-dev
+# Then open http://localhost:3000 in your browser
+```
+
+#### Option B: Command Line
 ```bash
 # Create a new game
 make create-game
@@ -237,6 +257,8 @@ stellar contract bindings typescript \
 - `make integration` - Run integration tests
 - `make verify` - Verify complete setup
 - `make clean` - Clean build artifacts
+- `make frontend-dev` - Start frontend development server
+- `make frontend-build` - Build frontend for production
 
 ### Script Commands
 
@@ -358,7 +380,42 @@ For questions or issues:
 
 ## 🎉 Acknowledgments
 
+## 🌐 Web Frontend
+
+The project includes a full-featured React frontend that provides:
+
+### 🎯 Frontend Features
+- **Interactive Game Board**: Click-to-play 3x3 grid interface
+- **Network Selection**: Switch between Local, Testnet, and Mainnet
+- **Wallet Integration**: Connect with Freighter wallet for secure transactions
+- **Game Management**: Create new games or join existing ones by ID
+- **Real-time Updates**: Live game state and win condition detection
+- **Development Mode**: Test accounts for easy local development
+
+### 🚀 Quick Start Frontend
+```bash
+# Start the frontend (includes dependency installation)
+make frontend-dev
+
+# Open your browser to http://localhost:3000
+```
+
+### 🎮 How to Play via Frontend
+1. **Choose Network**: Select Local for development or Testnet/Mainnet for production
+2. **Connect Wallet**: Use Freighter wallet or enable "test accounts" for development
+3. **Create Game**: Enter player names and click "Create Game" to get a game ID
+4. **Join Game**: Enter an existing game ID to join a game in progress
+5. **Make Moves**: Click on board cells to make your moves
+6. **Win Detection**: Game automatically detects wins, draws, and turn management
+
+The frontend provides a much more user-friendly experience compared to CLI interaction.
+
+## 🙋‍♂️ Built With
+
 Built with:
 - [Stellar](https://stellar.org/) - Blockchain platform
 - [Soroban](https://soroban.stellar.org/) - Smart contract platform
 - [Rust](https://www.rust-lang.org/) - Programming language
+- [React](https://react.dev/) - Frontend framework
+- [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
+- [Vite](https://vitejs.dev/) - Frontend build tool

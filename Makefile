@@ -1,4 +1,4 @@
-.PHONY: build test deploy setup-localnet interact clean help
+.PHONY: build test deploy setup-localnet interact clean help integration verify frontend-install frontend-dev frontend-build
 
 # Default target
 help:
@@ -21,6 +21,11 @@ help:
 	@echo "Testing:"
 	@echo "  make integration     Run integration tests"
 	@echo "  make verify          Verify complete setup"
+	@echo ""
+	@echo "Frontend:"
+	@echo "  make frontend-install Install frontend dependencies"
+	@echo "  make frontend-dev    Start frontend development server"
+	@echo "  make frontend-build  Build frontend for production"
 	@echo ""
 
 # Build the contract
@@ -70,3 +75,16 @@ integration:
 verify: test build
 	@echo "✅ All tests passed and contract built successfully!"
 	@echo "💡 Ready for deployment!"
+
+# Frontend commands
+frontend-install:
+	@echo "📦 Installing frontend dependencies..."
+	@cd frontend && npm install
+
+frontend-dev: frontend-install
+	@echo "🚀 Starting frontend development server..."
+	@cd frontend && npm run dev
+
+frontend-build: frontend-install
+	@echo "📦 Building frontend for production..."
+	@cd frontend && npm run build
