@@ -6,8 +6,6 @@
   "auth": [
     [],
     [],
-    [],
-    [],
     []
   ],
   "ledger": {
@@ -27,10 +25,10 @@
             "key": {
               "vec": [
                 {
-                  "symbol": "Game"
+                  "symbol": "Balance"
                 },
                 {
-                  "u32": 1
+                  "symbol": "alice"
                 }
               ]
             },
@@ -47,10 +45,10 @@
                 "key": {
                   "vec": [
                     {
-                      "symbol": "Game"
+                      "symbol": "Balance"
                     },
                     {
-                      "u32": 1
+                      "symbol": "alice"
                     }
                   ]
                 },
@@ -59,116 +57,24 @@
                   "map": [
                     {
                       "key": {
-                        "symbol": "board"
+                        "symbol": "native"
                       },
                       "val": {
-                        "vec": [
-                          {
-                            "vec": [
-                              {
-                                "symbol": "X"
-                              }
-                            ]
-                          },
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          "void"
-                        ]
+                        "i128": {
+                          "hi": 0,
+                          "lo": 500
+                        }
                       }
                     },
                     {
                       "key": {
-                        "symbol": "current_player"
+                        "symbol": "tokens"
                       },
                       "val": {
-                        "vec": [
-                          {
-                            "symbol": "O"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "has_bet"
-                      },
-                      "val": {
-                        "bool": false
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "player_o"
-                      },
-                      "val": {
-                        "symbol": "bob"
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "player_x"
-                      },
-                      "val": {
-                        "symbol": "alice"
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "status"
-                      },
-                      "val": {
-                        "vec": [
-                          {
-                            "symbol": "InProgress"
-                          }
-                        ]
+                        "vec": []
                       }
                     }
                   ]
-                }
-              }
-            },
-            "ext": "v0"
-          },
-          4095
-        ]
-      ],
-      [
-        {
-          "contract_data": {
-            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-            "key": {
-              "vec": [
-                {
-                  "symbol": "GameCounter"
-                }
-              ]
-            },
-            "durability": "persistent"
-          }
-        },
-        [
-          {
-            "last_modified_ledger_seq": 0,
-            "data": {
-              "contract_data": {
-                "ext": "v0",
-                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-                "key": {
-                  "vec": [
-                    {
-                      "symbol": "GameCounter"
-                    }
-                  ]
-                },
-                "durability": "persistent",
-                "val": {
-                  "u32": 1
                 }
               }
             },

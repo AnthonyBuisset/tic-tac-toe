@@ -87,6 +87,14 @@
                     },
                     {
                       "key": {
+                        "symbol": "has_bet"
+                      },
+                      "val": {
+                        "bool": false
+                      }
+                    },
+                    {
+                      "key": {
                         "symbol": "player_o"
                       },
                       "val": {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { WalletConnect } from './components/WalletConnect';
-import { GamesListPage } from './pages/GamesListPage';
+import { ModernWalletConnect } from './components/ModernWalletConnect';
+import { ModernGamesListPage } from './pages/ModernGamesListPage';
 import { GamePage } from './pages/GamePage';
 import { WalletConnection, WalletService } from './wallet';
 
@@ -31,27 +31,26 @@ const AppContent: React.FC = () => {
 
   if (!wallet) {
     return (
-      <div className="App">
-        <h1>🎮 Tic-Tac-Toe</h1>
-        <p>Play Tic-Tac-Toe on the Stellar blockchain</p>
-        <WalletConnect 
-          onConnect={handleConnect}
-          connecting={connecting}
-          error={error}
-        />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-md w-full text-center">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">TicTac Arena</h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">Connect your wallet to start playing</p>
+          <ModernWalletConnect 
+            onConnect={handleConnect}
+            connecting={connecting}
+            error={error}
+          />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="App">
-      <h1>🎮 Tic-Tac-Toe</h1>
-      <p>Play Tic-Tac-Toe on the Stellar blockchain</p>
-      
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Routes>
         <Route 
           path="/" 
-          element={<GamesListPage wallet={wallet} walletService={walletService} />} 
+          element={<ModernGamesListPage wallet={wallet} walletService={walletService} />} 
         />
         <Route 
           path="/games/:gameId" 

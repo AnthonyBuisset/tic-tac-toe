@@ -10,8 +10,6 @@
     [],
     [],
     [],
-    [],
-    [],
     []
   ],
   "ledger": {
@@ -24,6 +22,136 @@
     "min_temp_entry_ttl": 16,
     "max_entry_ttl": 6312000,
     "ledger_entries": [
+      [
+        {
+          "contract_data": {
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+            "key": {
+              "vec": [
+                {
+                  "symbol": "Balance"
+                },
+                {
+                  "symbol": "alice"
+                }
+              ]
+            },
+            "durability": "persistent"
+          }
+        },
+        [
+          {
+            "last_modified_ledger_seq": 0,
+            "data": {
+              "contract_data": {
+                "ext": "v0",
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+                "key": {
+                  "vec": [
+                    {
+                      "symbol": "Balance"
+                    },
+                    {
+                      "symbol": "alice"
+                    }
+                  ]
+                },
+                "durability": "persistent",
+                "val": {
+                  "map": [
+                    {
+                      "key": {
+                        "symbol": "native"
+                      },
+                      "val": {
+                        "i128": {
+                          "hi": 0,
+                          "lo": 800
+                        }
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "tokens"
+                      },
+                      "val": {
+                        "vec": []
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "ext": "v0"
+          },
+          4095
+        ]
+      ],
+      [
+        {
+          "contract_data": {
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+            "key": {
+              "vec": [
+                {
+                  "symbol": "Balance"
+                },
+                {
+                  "symbol": "bob"
+                }
+              ]
+            },
+            "durability": "persistent"
+          }
+        },
+        [
+          {
+            "last_modified_ledger_seq": 0,
+            "data": {
+              "contract_data": {
+                "ext": "v0",
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+                "key": {
+                  "vec": [
+                    {
+                      "symbol": "Balance"
+                    },
+                    {
+                      "symbol": "bob"
+                    }
+                  ]
+                },
+                "durability": "persistent",
+                "val": {
+                  "map": [
+                    {
+                      "key": {
+                        "symbol": "native"
+                      },
+                      "val": {
+                        "i128": {
+                          "hi": 0,
+                          "lo": 800
+                        }
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "tokens"
+                      },
+                      "val": {
+                        "vec": []
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "ext": "v0"
+          },
+          4095
+        ]
+      ],
       [
         {
           "contract_data": {
@@ -102,7 +230,7 @@
                         "symbol": "has_bet"
                       },
                       "val": {
-                        "bool": false
+                        "bool": true
                       }
                     },
                     {
@@ -149,10 +277,10 @@
             "key": {
               "vec": [
                 {
-                  "symbol": "Game"
+                  "symbol": "GameBet"
                 },
                 {
-                  "u32": 2
+                  "u32": 1
                 }
               ]
             },
@@ -169,10 +297,10 @@
                 "key": {
                   "vec": [
                     {
-                      "symbol": "Game"
+                      "symbol": "GameBet"
                     },
                     {
-                      "u32": 2
+                      "u32": 1
                     }
                   ]
                 },
@@ -181,43 +309,18 @@
                   "map": [
                     {
                       "key": {
-                        "symbol": "board"
+                        "symbol": "amount"
                       },
                       "val": {
-                        "vec": [
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          {
-                            "vec": [
-                              {
-                                "symbol": "X"
-                              }
-                            ]
-                          },
-                          "void",
-                          "void",
-                          "void",
-                          "void"
-                        ]
+                        "i128": {
+                          "hi": 0,
+                          "lo": 200
+                        }
                       }
                     },
                     {
                       "key": {
-                        "symbol": "current_player"
-                      },
-                      "val": {
-                        "vec": [
-                          {
-                            "symbol": "O"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "has_bet"
+                        "symbol": "player_o_claimed"
                       },
                       "val": {
                         "bool": false
@@ -225,28 +328,44 @@
                     },
                     {
                       "key": {
-                        "symbol": "player_o"
+                        "symbol": "player_o_paid"
                       },
                       "val": {
-                        "symbol": "david"
+                        "bool": true
                       }
                     },
                     {
                       "key": {
-                        "symbol": "player_x"
+                        "symbol": "player_x_claimed"
                       },
                       "val": {
-                        "symbol": "charlie"
+                        "bool": false
                       }
                     },
                     {
                       "key": {
-                        "symbol": "status"
+                        "symbol": "player_x_paid"
+                      },
+                      "val": {
+                        "bool": true
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "rewards_claimed"
+                      },
+                      "val": {
+                        "bool": false
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "token_type"
                       },
                       "val": {
                         "vec": [
                           {
-                            "symbol": "InProgress"
+                            "symbol": "Native"
                           }
                         ]
                       }
@@ -290,7 +409,7 @@
                 },
                 "durability": "persistent",
                 "val": {
-                  "u32": 2
+                  "u32": 1
                 }
               }
             },

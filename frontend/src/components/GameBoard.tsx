@@ -38,7 +38,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     } finally {
       setLoading(false);
     }
-  }, [gameId, walletService]);
+  }, [gameId, walletService, wallet]);
 
   const makeMove = async (position: number) => {
     if (!game || makingMove !== null) return;
@@ -131,90 +131,117 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   if (loading) {
     return (
-      <div className="game-board-container">
-        <div className="loading">Loading game...</div>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-gray-900 dark:text-white text-lg">Loading game...</div>
       </div>
     );
   }
 
   if (!game) {
     return (
-      <div className="game-board-container">
-        <div className="error">Game not found</div>
-        <button className="back-button" onClick={onBackToList}>
-          ← Back to Games
-        </button>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 dark:text-red-400 text-lg mb-4">Game not found</div>
+          <button 
+            className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white px-4 py-2 rounded-lg transition-colors"
+            onClick={onBackToList}
+          >
+            ← Back to Games
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="game-board-container">
-      <div className="game-board-header">
-        <button className="back-button" onClick={onBackToList}>
-          ← Back to Games
-        </button>
-        <h2>Game #{gameId}</h2>
-        <div className="refresh-button" onClick={() => loadGame()}>
-          🔄
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-4">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <button 
+            className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white px-4 py-2 rounded-lg transition-colors"
+            onClick={onBackToList}
+          >
+            ← Back to Games
+          </button>
+          <h2 className="text-gray-900 dark:text-white text-xl font-bold">Game #{gameId}</h2>
+          <button 
+            className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white px-3 py-2 rounded-lg transition-colors"
+            onClick={() => loadGame()}
+          >
+            🔄
+          </button>
         </div>
       </div>
 
-      <div className="game-info">
-        <div className="players-info">
-          <div className={`player ${getUserRole() === 'X' ? 'current-user' : ''}`}>
-            <span className="player-symbol x">X</span>
-            <span className="player-name">
-              {formatAddress(game.player_x)}
-              {getUserRole() === 'X' && ' (You)'}
-            </span>
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className={`flex items-center space-x-3 ${getUserRole() === 'X' ? 'bg-blue-100 dark:bg-blue-900/50 rounded-lg p-3' : ''}`}>
+              <span className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">X</span>
+              <span className="text-gray-900 dark:text-white">
+                {formatAddress(game.player_x)}
+                {getUserRole() === 'X' && ' (You)'}
+              </span>
+            </div>
+            <div className="text-gray-600 dark:text-gray-400 font-bold text-lg">VS</div>
+            <div className={`flex items-center space-x-3 ${getUserRole() === 'O' ? 'bg-red-100 dark:bg-red-900/50 rounded-lg p-3' : ''}`}>
+              <span className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white font-bold">O</span>
+              <span className="text-gray-900 dark:text-white">
+                {formatAddress(game.player_o)}
+                {getUserRole() === 'O' && ' (You)'}
+              </span>
+            </div>
           </div>
-          <div className="vs">VS</div>
-          <div className={`player ${getUserRole() === 'O' ? 'current-user' : ''}`}>
-            <span className="player-symbol o">O</span>
-            <span className="player-name">
-              {formatAddress(game.player_o)}
-              {getUserRole() === 'O' && ' (You)'}
-            </span>
+          
+          {getUserRole() === 'visitor' && (
+            <div className="bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded-lg p-3 mb-4">
+              <span className="text-yellow-800 dark:text-yellow-300">👀 Watching as visitor</span>
+            </div>
+          )}
+          
+          <div className="text-center text-gray-900 dark:text-white font-medium">
+            {getStatusMessage()}
           </div>
         </div>
-        
-        {getUserRole() === 'visitor' && (
-          <div className="visitor-badge">
-            👀 Watching as visitor
+
+        {error && (
+          <div className="bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg p-4 mb-6">
+            <div className="text-red-800 dark:text-red-300">{error}</div>
           </div>
         )}
-        
-        <div className="game-status-message">
-          {getStatusMessage()}
+
+        <div className="flex justify-center mb-6">
+          <div className="grid grid-cols-3 gap-2 w-80 h-80">
+            {game.board.map((cell, index) => (
+              <button
+                key={index}
+                className={`
+                  w-full h-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg
+                  flex items-center justify-center text-4xl font-bold
+                  transition-all duration-200 border-2
+                  ${cell === 'X' ? 'text-blue-600 dark:text-blue-400 border-blue-500' : ''}
+                  ${cell === 'O' ? 'text-red-600 dark:text-red-400 border-red-500' : ''}
+                  ${!cell ? 'border-gray-300 dark:border-gray-600' : ''}
+                  ${canMakeMove(index) ? 'hover:border-green-500 cursor-pointer' : 'cursor-not-allowed'}
+                  ${makingMove === index ? 'animate-pulse' : ''}
+                  disabled:opacity-50
+                `}
+                onClick={() => canMakeMove(index) && makeMove(index)}
+                disabled={!canMakeMove(index) || makingMove !== null}
+              >
+                {makingMove === index ? '...' : cell}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {game.player_o === 'waiting' && (
+          <div className="bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 rounded-lg p-6 text-center">
+            <p className="text-blue-800 dark:text-blue-300 mb-2">🎮 Share this game ID with a friend to play: <strong className="text-gray-900 dark:text-white">#{gameId}</strong></p>
+            <p className="text-blue-700 dark:text-blue-400">Or wait for someone to join from the games list!</p>
+          </div>
+        )}
       </div>
-
-      {error && <div className="error">{error}</div>}
-
-      <div className="board-container">
-        <div className="tic-tac-toe-board">
-          {game.board.map((cell, index) => (
-            <button
-              key={index}
-              className={`board-cell ${cell ? 'filled' : ''} ${
-                canMakeMove(index) ? 'playable' : ''
-              } ${makingMove === index ? 'making-move' : ''}`}
-              onClick={() => canMakeMove(index) && makeMove(index)}
-              disabled={!canMakeMove(index) || makingMove !== null}
-            >
-              {makingMove === index ? '...' : cell}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {game.player_o === 'waiting' && (
-        <div className="waiting-message">
-          <p>🎮 Share this game ID with a friend to play: <strong>#{gameId}</strong></p>
-          <p>Or wait for someone to join from the games list!</p>
-        </div>
-      )}
     </div>
   );
 };

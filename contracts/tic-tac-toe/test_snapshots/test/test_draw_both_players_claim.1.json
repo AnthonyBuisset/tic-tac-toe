@@ -12,6 +12,16 @@
     [],
     [],
     [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
     []
   ],
   "ledger": {
@@ -24,6 +34,136 @@
     "min_temp_entry_ttl": 16,
     "max_entry_ttl": 6312000,
     "ledger_entries": [
+      [
+        {
+          "contract_data": {
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+            "key": {
+              "vec": [
+                {
+                  "symbol": "Balance"
+                },
+                {
+                  "symbol": "alice"
+                }
+              ]
+            },
+            "durability": "persistent"
+          }
+        },
+        [
+          {
+            "last_modified_ledger_seq": 0,
+            "data": {
+              "contract_data": {
+                "ext": "v0",
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+                "key": {
+                  "vec": [
+                    {
+                      "symbol": "Balance"
+                    },
+                    {
+                      "symbol": "alice"
+                    }
+                  ]
+                },
+                "durability": "persistent",
+                "val": {
+                  "map": [
+                    {
+                      "key": {
+                        "symbol": "native"
+                      },
+                      "val": {
+                        "i128": {
+                          "hi": 0,
+                          "lo": 1000
+                        }
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "tokens"
+                      },
+                      "val": {
+                        "vec": []
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "ext": "v0"
+          },
+          4095
+        ]
+      ],
+      [
+        {
+          "contract_data": {
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+            "key": {
+              "vec": [
+                {
+                  "symbol": "Balance"
+                },
+                {
+                  "symbol": "bob"
+                }
+              ]
+            },
+            "durability": "persistent"
+          }
+        },
+        [
+          {
+            "last_modified_ledger_seq": 0,
+            "data": {
+              "contract_data": {
+                "ext": "v0",
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+                "key": {
+                  "vec": [
+                    {
+                      "symbol": "Balance"
+                    },
+                    {
+                      "symbol": "bob"
+                    }
+                  ]
+                },
+                "durability": "persistent",
+                "val": {
+                  "map": [
+                    {
+                      "key": {
+                        "symbol": "native"
+                      },
+                      "val": {
+                        "i128": {
+                          "hi": 0,
+                          "lo": 1000
+                        }
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "tokens"
+                      },
+                      "val": {
+                        "vec": []
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "ext": "v0"
+          },
+          4095
+        ]
+      ],
       [
         {
           "contract_data": {
@@ -74,14 +214,62 @@
                               }
                             ]
                           },
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          "void"
+                          {
+                            "vec": [
+                              {
+                                "symbol": "O"
+                              }
+                            ]
+                          },
+                          {
+                            "vec": [
+                              {
+                                "symbol": "X"
+                              }
+                            ]
+                          },
+                          {
+                            "vec": [
+                              {
+                                "symbol": "X"
+                              }
+                            ]
+                          },
+                          {
+                            "vec": [
+                              {
+                                "symbol": "O"
+                              }
+                            ]
+                          },
+                          {
+                            "vec": [
+                              {
+                                "symbol": "O"
+                              }
+                            ]
+                          },
+                          {
+                            "vec": [
+                              {
+                                "symbol": "O"
+                              }
+                            ]
+                          },
+                          {
+                            "vec": [
+                              {
+                                "symbol": "X"
+                              }
+                            ]
+                          },
+                          {
+                            "vec": [
+                              {
+                                "symbol": "X"
+                              }
+                            ]
+                          }
                         ]
                       }
                     },
@@ -92,7 +280,7 @@
                       "val": {
                         "vec": [
                           {
-                            "symbol": "O"
+                            "symbol": "X"
                           }
                         ]
                       }
@@ -102,7 +290,7 @@
                         "symbol": "has_bet"
                       },
                       "val": {
-                        "bool": false
+                        "bool": true
                       }
                     },
                     {
@@ -128,7 +316,7 @@
                       "val": {
                         "vec": [
                           {
-                            "symbol": "InProgress"
+                            "symbol": "Draw"
                           }
                         ]
                       }
@@ -149,10 +337,10 @@
             "key": {
               "vec": [
                 {
-                  "symbol": "Game"
+                  "symbol": "GameBet"
                 },
                 {
-                  "u32": 2
+                  "u32": 1
                 }
               ]
             },
@@ -169,10 +357,10 @@
                 "key": {
                   "vec": [
                     {
-                      "symbol": "Game"
+                      "symbol": "GameBet"
                     },
                     {
-                      "u32": 2
+                      "u32": 1
                     }
                   ]
                 },
@@ -181,72 +369,63 @@
                   "map": [
                     {
                       "key": {
-                        "symbol": "board"
+                        "symbol": "amount"
                       },
                       "val": {
-                        "vec": [
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          {
-                            "vec": [
-                              {
-                                "symbol": "X"
-                              }
-                            ]
-                          },
-                          "void",
-                          "void",
-                          "void",
-                          "void"
-                        ]
+                        "i128": {
+                          "hi": 0,
+                          "lo": 250
+                        }
                       }
                     },
                     {
                       "key": {
-                        "symbol": "current_player"
+                        "symbol": "player_o_claimed"
                       },
                       "val": {
-                        "vec": [
-                          {
-                            "symbol": "O"
-                          }
-                        ]
+                        "bool": true
                       }
                     },
                     {
                       "key": {
-                        "symbol": "has_bet"
+                        "symbol": "player_o_paid"
                       },
                       "val": {
-                        "bool": false
+                        "bool": true
                       }
                     },
                     {
                       "key": {
-                        "symbol": "player_o"
+                        "symbol": "player_x_claimed"
                       },
                       "val": {
-                        "symbol": "david"
+                        "bool": true
                       }
                     },
                     {
                       "key": {
-                        "symbol": "player_x"
+                        "symbol": "player_x_paid"
                       },
                       "val": {
-                        "symbol": "charlie"
+                        "bool": true
                       }
                     },
                     {
                       "key": {
-                        "symbol": "status"
+                        "symbol": "rewards_claimed"
+                      },
+                      "val": {
+                        "bool": true
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "token_type"
                       },
                       "val": {
                         "vec": [
                           {
-                            "symbol": "InProgress"
+                            "symbol": "Native"
                           }
                         ]
                       }
@@ -290,7 +469,7 @@
                 },
                 "durability": "persistent",
                 "val": {
-                  "u32": 2
+                  "u32": 1
                 }
               }
             },

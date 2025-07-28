@@ -31,10 +31,10 @@
             "key": {
               "vec": [
                 {
-                  "symbol": "Game"
+                  "symbol": "Balance"
                 },
                 {
-                  "u32": 1
+                  "symbol": "alice"
                 }
               ]
             },
@@ -51,10 +51,10 @@
                 "key": {
                   "vec": [
                     {
-                      "symbol": "Game"
+                      "symbol": "Balance"
                     },
                     {
-                      "u32": 1
+                      "symbol": "alice"
                     }
                   ]
                 },
@@ -63,140 +63,51 @@
                   "map": [
                     {
                       "key": {
-                        "symbol": "board"
+                        "symbol": "native"
+                      },
+                      "val": {
+                        "i128": {
+                          "hi": 0,
+                          "lo": 0
+                        }
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "tokens"
                       },
                       "val": {
                         "vec": [
                           {
                             "vec": [
                               {
-                                "symbol": "X"
+                                "symbol": "USDC"
+                              },
+                              {
+                                "i128": {
+                                  "hi": 0,
+                                  "lo": 1500
+                                }
                               }
                             ]
                           },
                           {
                             "vec": [
                               {
-                                "symbol": "X"
-                              }
-                            ]
-                          },
-                          {
-                            "vec": [
+                                "symbol": "USDT"
+                              },
                               {
-                                "symbol": "X"
+                                "i128": {
+                                  "hi": 0,
+                                  "lo": 500
+                                }
                               }
                             ]
-                          },
-                          {
-                            "vec": [
-                              {
-                                "symbol": "O"
-                              }
-                            ]
-                          },
-                          {
-                            "vec": [
-                              {
-                                "symbol": "O"
-                              }
-                            ]
-                          },
-                          "void",
-                          "void",
-                          "void",
-                          "void"
-                        ]
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "current_player"
-                      },
-                      "val": {
-                        "vec": [
-                          {
-                            "symbol": "X"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "has_bet"
-                      },
-                      "val": {
-                        "bool": false
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "player_o"
-                      },
-                      "val": {
-                        "symbol": "bob"
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "player_x"
-                      },
-                      "val": {
-                        "symbol": "alice"
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "status"
-                      },
-                      "val": {
-                        "vec": [
-                          {
-                            "symbol": "XWins"
                           }
                         ]
                       }
                     }
                   ]
-                }
-              }
-            },
-            "ext": "v0"
-          },
-          4095
-        ]
-      ],
-      [
-        {
-          "contract_data": {
-            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-            "key": {
-              "vec": [
-                {
-                  "symbol": "GameCounter"
-                }
-              ]
-            },
-            "durability": "persistent"
-          }
-        },
-        [
-          {
-            "last_modified_ledger_seq": 0,
-            "data": {
-              "contract_data": {
-                "ext": "v0",
-                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-                "key": {
-                  "vec": [
-                    {
-                      "symbol": "GameCounter"
-                    }
-                  ]
-                },
-                "durability": "persistent",
-                "val": {
-                  "u32": 1
                 }
               }
             },

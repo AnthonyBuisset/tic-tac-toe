@@ -89,6 +89,14 @@
                     },
                     {
                       "key": {
+                        "symbol": "has_bet"
+                      },
+                      "val": {
+                        "bool": false
+                      }
+                    },
+                    {
+                      "key": {
                         "symbol": "player_o"
                       },
                       "val": {
@@ -189,6 +197,14 @@
                             "symbol": "X"
                           }
                         ]
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "has_bet"
+                      },
+                      "val": {
+                        "bool": false
                       }
                     },
                     {
