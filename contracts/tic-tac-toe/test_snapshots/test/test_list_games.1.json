@@ -8,10 +8,6 @@
     [],
     [],
     [],
-    [],
-    [],
-    [],
-    [],
     []
   ],
   "ledger": {
@@ -67,13 +63,7 @@
                       },
                       "val": {
                         "vec": [
-                          {
-                            "vec": [
-                              {
-                                "symbol": "X"
-                              }
-                            ]
-                          },
+                          "void",
                           "void",
                           "void",
                           "void",
@@ -92,7 +82,7 @@
                       "val": {
                         "vec": [
                           {
-                            "symbol": "O"
+                            "symbol": "X"
                           }
                         ]
                       }
@@ -181,13 +171,7 @@
                           "void",
                           "void",
                           "void",
-                          {
-                            "vec": [
-                              {
-                                "symbol": "X"
-                              }
-                            ]
-                          },
+                          "void",
                           "void",
                           "void",
                           "void",
@@ -202,7 +186,7 @@
                       "val": {
                         "vec": [
                           {
-                            "symbol": "O"
+                            "symbol": "X"
                           }
                         ]
                       }
@@ -212,7 +196,7 @@
                         "symbol": "player_o"
                       },
                       "val": {
-                        "symbol": "david"
+                        "symbol": "waiting"
                       }
                     },
                     {

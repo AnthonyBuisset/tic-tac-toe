@@ -81,10 +81,10 @@ frontend-install:
 	@echo "📦 Installing frontend dependencies..."
 	@cd frontend && npm install
 
-frontend-dev: frontend-install
+frontend-dev:
 	@echo "🚀 Starting frontend development server..."
 	@cd frontend && npm run dev
 
-frontend-build: frontend-install
-	@echo "📦 Building frontend for production..."
+frontend-build:
+	@echo "🏗️ Building frontend for production..."
 	@cd frontend && npm run build

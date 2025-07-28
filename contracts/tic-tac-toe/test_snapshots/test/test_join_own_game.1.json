@@ -6,12 +6,6 @@
   "auth": [
     [],
     [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
     []
   ],
   "ledger": {
@@ -67,13 +61,7 @@
                       },
                       "val": {
                         "vec": [
-                          {
-                            "vec": [
-                              {
-                                "symbol": "X"
-                              }
-                            ]
-                          },
+                          "void",
                           "void",
                           "void",
                           "void",
@@ -92,7 +80,7 @@
                       "val": {
                         "vec": [
                           {
-                            "symbol": "O"
+                            "symbol": "X"
                           }
                         ]
                       }
@@ -102,7 +90,7 @@
                         "symbol": "player_o"
                       },
                       "val": {
-                        "symbol": "bob"
+                        "symbol": "waiting"
                       }
                     },
                     {
@@ -111,116 +99,6 @@
                       },
                       "val": {
                         "symbol": "alice"
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "status"
-                      },
-                      "val": {
-                        "vec": [
-                          {
-                            "symbol": "InProgress"
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
-              }
-            },
-            "ext": "v0"
-          },
-          4095
-        ]
-      ],
-      [
-        {
-          "contract_data": {
-            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-            "key": {
-              "vec": [
-                {
-                  "symbol": "Game"
-                },
-                {
-                  "u32": 2
-                }
-              ]
-            },
-            "durability": "persistent"
-          }
-        },
-        [
-          {
-            "last_modified_ledger_seq": 0,
-            "data": {
-              "contract_data": {
-                "ext": "v0",
-                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-                "key": {
-                  "vec": [
-                    {
-                      "symbol": "Game"
-                    },
-                    {
-                      "u32": 2
-                    }
-                  ]
-                },
-                "durability": "persistent",
-                "val": {
-                  "map": [
-                    {
-                      "key": {
-                        "symbol": "board"
-                      },
-                      "val": {
-                        "vec": [
-                          "void",
-                          "void",
-                          "void",
-                          "void",
-                          {
-                            "vec": [
-                              {
-                                "symbol": "X"
-                              }
-                            ]
-                          },
-                          "void",
-                          "void",
-                          "void",
-                          "void"
-                        ]
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "current_player"
-                      },
-                      "val": {
-                        "vec": [
-                          {
-                            "symbol": "O"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "player_o"
-                      },
-                      "val": {
-                        "symbol": "david"
-                      }
-                    },
-                    {
-                      "key": {
-                        "symbol": "player_x"
-                      },
-                      "val": {
-                        "symbol": "charlie"
                       }
                     },
                     {
@@ -274,7 +152,7 @@
                 },
                 "durability": "persistent",
                 "val": {
-                  "u32": 2
+                  "u32": 1
                 }
               }
             },
